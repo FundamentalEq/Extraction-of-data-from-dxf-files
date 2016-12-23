@@ -1,8 +1,8 @@
-from sympy import *
+# from sympy import *
 from sympy.geometry import *
 
 def FindCenterLine(ls1,ls2) :
-    print ls1 , ls2
+    # print ls1 , ls2
     if not ls1.is_parallel(ls2) :
         print "Lines are not parallel thus Center Line cannot be genrated"
         return None
