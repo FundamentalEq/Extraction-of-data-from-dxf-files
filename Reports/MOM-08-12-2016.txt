@@ -1,0 +1,19 @@
+MOM(Minutes of Meeting)
+
+*VENUE: Lab for Spatial Informatics
+*DATE: 8th December, 2016.
+*TIME: 3PM - 6PM
+
+
+ACTIVITIES
+
+* Discussed the bigger picture of the project, and individual roles and modules with Mrs.Srishti Srivastava
+
+* Discussed with the Prof. Rajan and Mrs. Srishti about various ways to approch the problem of data abstraction.
+ Two approches were "Parrallel Line approach" & "Polygon based approach"
+
+* Finally it was decided that we will go ahead with "Polygon Based Approach" .
+
+* It was also decided that for now I will work with clean data , and try to implement the Polygon based approach on it .
+
+* Once the polygons are derived , the next level would be to derive center line of the polygon , followed by identification of closed spaces ..

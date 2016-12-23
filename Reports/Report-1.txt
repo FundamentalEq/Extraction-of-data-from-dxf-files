@@ -1,0 +1,14 @@
+
+INPUT: A 2-D cleaned representation of the data
+
+OUTPUT:Construction of polygon and then centerline and subsequent indentification of closed spaces.
+
+SKILLS: Working with ezdxf , python and understanding of computation geometry
+
+
+IDEA: The team is required to work majorly on data extraction. The data once extracted from its rough format and presented in the desired structure can easily have algorithms for the fastest possible evactuation implemented on it. We are trying to generalize this process as much as possible to make sure our code can work on a wide range of buildings, with just the architectural plan available.Very briefly:
+Srishti mam and Veronica deal with building the libraries for the various objects that the data may contain, so that approprite tags can be associated with them.
+Soumya will be working on a shape file(where polygons represent closed spaces instead of enclosing walls) and find its centroid, representing it as a node(with some data attatched with it- such as weight). In this manner, I am expected to create a netwprk of points from given shape file.
+Rachna extract data from its rough representation, and represent them with the right tags and labels, after identifying each component(and any text that may be associated with it) seperately.
+
+ROLE: My work is first extract the lines,then use those lines to form the polygons,then derive center line out of the polygons and then subsequently indentify closed spaces.
