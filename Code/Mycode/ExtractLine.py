@@ -1,12 +1,15 @@
 # Python library to interact with dxf files
 import ezdxf
-#Python library for geometry and mathematical computations
+
+# for taking in the file name as argument
+import sys
 
 from LineGeometry import *
 from GlobalValues import *
 from GenCenterLine import *
 from GenOutput import *
 
+# Function to check is line-segment1(ls1) and line-segment2(ls2) can form a wall pair
 def CanFormWallPair(ls1,ls2) :
     if not ls1.is_parallel(ls2) :
         return False
@@ -19,9 +22,18 @@ def CanFormWallPair(ls1,ls2) :
         return False
     return True
 
+# The main function that takes input of a dxf file and Extracts the center line
 def main() :
-    dwg = ezdxf.readfile("1RoomWSSNew.dxf")
+    argument = sys.argv
+    if not (len(argument)==2) :
+        print "Usage: python ExtractLine.py Filename"
+        sys.exit()
+    FileName = argument[1]
+
+    # Opening the dxf file using ezdxf
+    dwg = ezdxf.readfile(FileName)
     modelspace = dwg.modelspace()
+
     # Extarction of lines-segments from the dxf file and storing them as
     # sympy.geometry.Segment for further computation
     ElineSegments = []
@@ -30,19 +42,25 @@ def main() :
         x2,y2,z2 = l.dxf.end
         ElineSegments.append(Segment(Point(x1,y1),Point(x2,y2)))
 
-    PrintLines(ElineSegments)
-    MakeShapeFile(ElineSegments,"Eline.shp")
+    # PrintLines(ElineSegments)
+    # MakeShapeFile(ElineSegments,"Eline.shp")
+
     # For Storing wether the current line has already been paired or not
     Edone = [ False for i in range(len(ElineSegments)) ]
 
+    # Store the genrated Centerlines
     CenterLines = []
+
+    # Store the number of the centerline associated with the current line
     AssoCenterLine = [-1 for i in range(len(ElineSegments))]
+
+    # Store the pair of wall line,associated with the ith center-line
     AssoEline = []
 
     ElineSegmetsLen = len(ElineSegments)
     i = 0
     while i < ElineSegmetsLen :
-        print "i : ", i ,ElineSegments[i]
+        # print "i : ", i ,ElineSegments[i]
         if not Edone[i] :
             PairIndex = -1
 
@@ -60,29 +78,35 @@ def main() :
 
             # if the PairIndex has been found
             if PairIndex >= 0 :
+                # Mark that both the ith and PairIndex th line have been paired
+                # and thus cannot be pairred with any other line
                 Edone[i] = Edone[PairIndex] = True
                 AssoCenterLine[i] = AssoCenterLine[PairIndex] = len(AssoEline)
                 AssoEline.append((i,PairIndex))
 
-                ElineSegments[i],ElineSegments[PairIndex],centerline,temp = SplitOverlappingLineSegmets(ElineSegments[i],ElineSegments[PairIndex],i)
+                ElineSegments[i],ElineSegments[PairIndex],centerline,temp = SplitOverlappingLineSegmets(ElineSegments[i],ElineSegments[PairIndex])
                 CenterLines.append(centerline)
+
+                # Add new lines segments genrated due to splitting
                 for t in temp :
                     ElineSegments.append(t)
-                PrintLines(temp)
+                # PrintLines(temp)
+
+                # Extend the others array also accomodate the new lines
                 while len(ElineSegments) > len(Edone) :
                     Edone.append(False)
                     AssoCenterLine.append(-1)
 
                 ElineSegmetsLen = len(ElineSegments)
         i += 1
-    PrintLines(ElineSegments)
-    MakeShapeFile(ElineSegments,"ss.shp")
-    print AssoCenterLine
-    # for i,j in AssoEline :
-    #     CenterLines.append(FindCenterLine(ElineSegments[i],ElineSegments[j]))
+    # PrintLines(ElineSegments)
+    # MakeShapeFile(ElineSegments,"ss.shp")
+    # print AssoCenterLine
 
+    print "CenterLine before extension"
     PrintLines(CenterLines)
-    MakeShapeFile(CenterLines,"cv1.shp")
+    Name = FileName.split('.dxf')[0] + "_centerlines_before_extension.shp"
+    MakeShapeFile(CenterLines,Name)
 
 
     # for extension of center Lines
@@ -91,11 +115,10 @@ def main() :
             if (AssoCenterLine[i]>-1) and (AssoCenterLine[j] > -1) and (len(ElineSegments[i].intersection(ElineSegments[j])) > 0) :
                 CenterLines[AssoCenterLine[i]],CenterLines[AssoCenterLine[j]] = JoinCenterLine(CenterLines[AssoCenterLine[i]],CenterLines[AssoCenterLine[j]])
 
-    for i in range(len(CenterLines)) :
-        a,b = CenterLines[i].points
-        print i , float(a.x) ,float(a.y) ,float(b.x) ,float(b.y)
-
+    print "CenterLine before extension"
+    PrintLines(CenterLines)
     # writing into a shape file
-    MakeShapeFile(CenterLines,"CenterLine.shp")
+    Name = FileName.split('.dxf')[0] + "_centerlines_after_extension.shp"
+    MakeShapeFile(CenterLines,Name)
 
 main()

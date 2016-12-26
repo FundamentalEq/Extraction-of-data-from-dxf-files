@@ -4,8 +4,10 @@
 # from sympy import *
 from sympy.geometry import *
 
-from GenOutput import *
+# from GenOutput import *
 
+# Function that find the centerline , given 2 line segments ls1 and ls2
+# For understanding the working of the function please refer to presentation1
 def FindCenterLine(ls1,ls2) :
     # print ls1 , ls2
     if not ls1.is_parallel(ls2) :
@@ -14,7 +16,6 @@ def FindCenterLine(ls1,ls2) :
 
     mid1 = mid2 = None
     x2,y2 = ls2.points
-    # for case 1,case 3 and case 4
     if ls1.contains(ls1.projection(x2)) :
         mid1 = x2.midpoint(ls1.projection(x2))
 
@@ -42,10 +43,29 @@ def FindCenterLine(ls1,ls2) :
     s = Segment(mid1,mid2)
     return s
 
+# Function splits the linse Segment ls1, into parts that don't overlap with the
+# Segment formed by points a and b
+# there can be 4 valid cases as follows :
+
+# case1
+# A --------------
+# B   ----------
+
+# case2
+# A     --------------
+# B   ----------------------
+
+# case3
+# A --------------
+# B   ------------
+
+# case4
+# A  --------------
+# B  ----------
 def SplitLineSegmetOverPoints(ls1,a,b) :
     c,d = ls1.points
     temp = []
-
+    # Case 3,4
     if a == c :
         if b.distance(d) > 0 :
             temp.append(Segment(b,d))
@@ -58,6 +78,7 @@ def SplitLineSegmetOverPoints(ls1,a,b) :
     elif b == d:
         if a.distance(c) > 0 :
             temp.append(Segment(a,c))
+    # case 1,2
     else :
         if c.distance(a) < c.distance(b) :
             cc = a
@@ -76,22 +97,9 @@ def SplitLineSegmetOverPoints(ls1,a,b) :
             temp.append(Segment(d,dd))
     return temp
 
-def SplitOverlappingLineSegmets(ls1,ls2,i) :
-    # a,b = ls1.points
-    # c,d = ls2.points
-    # temp = []
-    # # case1
-    # if ls1.contains(ls1.projection(c)) and ls1.contains(ls1.projection(d)) :
-    #     Nls1 = Segment(ls1.contains(ls1.projection(c),ls1.contains(ls1.projection(d))))
-    #     Nls2 = ls2
-    #
-    # # case 2
-    # elif ls2.contains(ls2.projection(a)) and ls2.contains(ls2.projection(b)) :
-    #     Nls1 = ls1
-    #     Nls2 = Segment(ls2.contains(ls2.projection(a),ls2.contains(ls2.projection(b))))
-    #
-    # # case3
-    # elif
+# Function extract the centerline, and split the line segments , into the part used for genration of centerline
+# and the part not used for the genration of the center line
+def SplitOverlappingLineSegmets(ls1,ls2) :
     centerline = FindCenterLine(ls1,ls2)
     # print "Centerline" , centerline
     temp = []
@@ -102,14 +110,4 @@ def SplitOverlappingLineSegmets(ls1,ls2,i) :
         temp.append(t)
     Nls1 = Segment(ls1.projection(cl1),ls1.projection(cl2))
     Nls2 = Segment(ls2.projection(cl1),ls2.projection(cl2))
-    name = "temp" + str(i) + ".shp"
-    name2 = "temp" + str(i) + "original.shp"
-    MakeShapeFile([ls1,ls2],name2)
-    temp2 = []
-    for t in temp :
-        temp2.append(t)
-    temp2.append(Nls1)
-    temp2.append(Nls2)
-    temp2.append(centerline)
-    MakeShapeFile(temp2,name)
     return Nls1,Nls2,centerline,temp

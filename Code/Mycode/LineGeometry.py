@@ -58,6 +58,7 @@ def FindPrependicularDistance(ls1,ls2) :
         s = ls2.perpendicular_segment(x1)
         return s.length
 
+# Function to extend the line segment ls1 to point p
 def ExtendLineSegment(ls1,p) :
     a,b = ls1.points
     s = ls1
