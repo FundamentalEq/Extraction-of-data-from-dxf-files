@@ -39,3 +39,52 @@ def FindCenterLine(ls1,ls2) :
         return None
     s = Segment(mid1,mid2)
     return s
+
+def SplitLineSegmetOverPoints(ls1,a,b) :
+    c,d = ls1.points
+    temp = []
+
+    if a.distance(c) < a.distance(d) :
+        aa = c
+    else :
+        aa = d
+
+    if a.distance(aa) > 0 :
+        temp.append(Segment(a,aa))
+
+    if b.distance(c) < b.distance(d) :
+        bb = c
+    else :
+        bb = d
+
+    if b.distance(bb) > 0 :
+        temp.append(Segment(b,bb))
+    return temp
+
+def SplitOverlappingLineSegmets(ls1,ls2) :
+    # a,b = ls1.points
+    # c,d = ls2.points
+    # temp = []
+    # # case1
+    # if ls1.contains(ls1.projection(c)) and ls1.contains(ls1.projection(d)) :
+    #     Nls1 = Segment(ls1.contains(ls1.projection(c),ls1.contains(ls1.projection(d))))
+    #     Nls2 = ls2
+    #
+    # # case 2
+    # elif ls2.contains(ls2.projection(a)) and ls2.contains(ls2.projection(b)) :
+    #     Nls1 = ls1
+    #     Nls2 = Segment(ls2.contains(ls2.projection(a),ls2.contains(ls2.projection(b))))
+    #
+    # # case3
+    # elif
+    centerline = FindCenterLine(ls1,ls2)
+    # print "Centerline" , centerline
+    temp = []
+    cl1,cl2 = centerline.points
+    for t in SplitLineSegmetOverPoints(ls1,cl1,cl2) :
+        temp.append(t)
+    for t in SplitLineSegmetOverPoints(ls2,cl1,cl2) :
+        temp.append(t)
+    Nls1 = Segment(ls1.projection(cl1),ls1.projection(cl2))
+    Nls2 = Segment(ls2.projection(cl1),ls2.projection(cl2))
+    return Nls1,Nls2,centerline,temp
