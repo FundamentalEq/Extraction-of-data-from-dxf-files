@@ -57,3 +57,35 @@ def FindPrependicularDistance(ls1,ls2) :
     if ls2.contains(ls2.projection(x1)) or ls2.contains(ls2.projection(y1)) :
         s = ls2.perpendicular_segment(x1)
         return s.length
+
+def ExtendLineSegment(ls1,p) :
+    a,b = ls1.points
+    s = ls1
+
+    #if the point already lies on the line-segment the nothing needs to be done
+    if not s.contains(p) :
+        #else find the end point of the line segment  nearer to the point "p"
+        #and replace it with the point "p"
+        if a.distance(p) < b.distance(p) :
+            s = Segment(p,b)
+        else :
+            s = Segment(a,p)
+    return s
+
+def JoinCenterLine(ls1,ls2) :
+    #Find the lines corressponding to line segments
+    l1 = Line(ls1)
+    l2 = Line(ls2)
+
+    # If the 2 line segments are parallel
+    if l1.is_similar(l2) :
+        return ls1,ls2
+
+    #Find the point of intersection of the lines
+    IntersectionPointArray = l1.intersection(l2)
+    IntersectionPoint = IntersectionPointArray[0]
+
+    #Extend both the line segments to the point of intesection
+    ls1 = ExtendLineSegment(ls1,IntersectionPoint)
+    ls2 = ExtendLineSegment(ls2,IntersectionPoint)
+    return ls1,ls2

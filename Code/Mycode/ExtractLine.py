@@ -19,37 +19,8 @@ def CanFormWallPair(ls1,ls2) :
         return False
     return True
 
-def ExtendLineSegment(ls1,p) :
-    a,b = ls1.points
-    s = ls1
-
-    #if the point already lies on the line-segment the nothing needs to be done
-    if not s.contains(p) :
-        #else find the end point of the line segment  nearer to the point "p"
-        #and replace it with the point "p"
-        if a.distance(p) < b.distance(p) :
-            s = Segment(p,b)
-        else :
-            s = Segment(a,p)
-    return s
-
-def JoinCenterLine(ls1,ls2) :
-    #Find the lines corressponding to line segments
-    l1 = Line(ls1)
-    l2 = Line(ls2)
-
-    #Find the point of intersection of the lines
-    IntersectionPointArray = l1.intersection(l2)
-    IntersectionPoint = IntersectionPointArray[0]
-
-    #Extend both the line segments to the point of intesection
-    ls1 = ExtendLineSegment(ls1,IntersectionPoint)
-    ls2 = ExtendLineSegment(ls2,IntersectionPoint)
-    return ls1,ls2
-
-
 def main() :
-    dwg = ezdxf.readfile("1RoomWSS.dxf")
+    dwg = ezdxf.readfile("1RoomWSSNew.dxf")
     modelspace = dwg.modelspace()
     # Extarction of lines-segments from the dxf file and storing them as
     # sympy.geometry.Segment for further computation
@@ -67,12 +38,17 @@ def main() :
     CenterLines = []
     AssoCenterLine = [-1 for i in range(len(ElineSegments))]
     AssoEline = []
-    for i in range(len(ElineSegments)) :
+
+    ElineSegmetsLen = len(ElineSegments)
+    i = 0
+    while i < ElineSegmetsLen :
+        print "i : ", i ,ElineSegments[i]
         if not Edone[i] :
             PairIndex = -1
 
             # Find the pair index
-            for j in range(i+1,len(ElineSegments)) :
+            j = i + 1
+            while j < ElineSegmetsLen :
                 if not Edone[j] :
                     if CanFormWallPair(ElineSegments[i],ElineSegments[j])  :
                         if PairIndex == -1 :
@@ -80,15 +56,30 @@ def main() :
                         elif FindProjectedLen(ElineSegments[i],ElineSegments[j]) > FindProjectedLen(ElineSegments[i],ElineSegments[PairIndex]) :
                             PairIndex = j
 
+                j += 1
+
             # if the PairIndex has been found
             if PairIndex >= 0 :
                 Edone[i] = Edone[PairIndex] = True
                 AssoCenterLine[i] = AssoCenterLine[PairIndex] = len(AssoEline)
                 AssoEline.append((i,PairIndex))
 
+                ElineSegments[i],ElineSegments[PairIndex],centerline,temp = SplitOverlappingLineSegmets(ElineSegments[i],ElineSegments[PairIndex],i)
+                CenterLines.append(centerline)
+                for t in temp :
+                    ElineSegments.append(t)
+                PrintLines(temp)
+                while len(ElineSegments) > len(Edone) :
+                    Edone.append(False)
+                    AssoCenterLine.append(-1)
+
+                ElineSegmetsLen = len(ElineSegments)
+        i += 1
+    PrintLines(ElineSegments)
+    MakeShapeFile(ElineSegments,"ss.shp")
     print AssoCenterLine
-    for i,j in AssoEline :
-        CenterLines.append(FindCenterLine(ElineSegments[i],ElineSegments[j]))
+    # for i,j in AssoEline :
+    #     CenterLines.append(FindCenterLine(ElineSegments[i],ElineSegments[j]))
 
     PrintLines(CenterLines)
     MakeShapeFile(CenterLines,"cv1.shp")

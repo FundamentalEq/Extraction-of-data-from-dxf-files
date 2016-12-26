@@ -4,6 +4,8 @@
 # from sympy import *
 from sympy.geometry import *
 
+from GenOutput import *
+
 def FindCenterLine(ls1,ls2) :
     # print ls1 , ls2
     if not ls1.is_parallel(ls2) :
@@ -44,24 +46,37 @@ def SplitLineSegmetOverPoints(ls1,a,b) :
     c,d = ls1.points
     temp = []
 
-    if a.distance(c) < a.distance(d) :
-        aa = c
+    if a == c :
+        if b.distance(d) > 0 :
+            temp.append(Segment(b,d))
+    elif a == d :
+        if b.distance(c) > 0 :
+            temp.append(Segment(b,c))
+    elif b == c:
+        if a.distance(d) > 0 :
+            temp.append(Segment(a,d))
+    elif b == d:
+        if a.distance(c) > 0 :
+            temp.append(Segment(a,c))
     else :
-        aa = d
+        if c.distance(a) < c.distance(b) :
+            cc = a
+        else :
+            cc = b
 
-    if a.distance(aa) > 0 :
-        temp.append(Segment(a,aa))
+        if c.distance(cc) > 0 :
+            temp.append(Segment(c,cc))
 
-    if b.distance(c) < b.distance(d) :
-        bb = c
-    else :
-        bb = d
+        if d.distance(a) < d.distance(b) :
+            dd = a
+        else :
+            dd = b
 
-    if b.distance(bb) > 0 :
-        temp.append(Segment(b,bb))
+        if d.distance(dd) > 0 :
+            temp.append(Segment(d,dd))
     return temp
 
-def SplitOverlappingLineSegmets(ls1,ls2) :
+def SplitOverlappingLineSegmets(ls1,ls2,i) :
     # a,b = ls1.points
     # c,d = ls2.points
     # temp = []
@@ -81,10 +96,20 @@ def SplitOverlappingLineSegmets(ls1,ls2) :
     # print "Centerline" , centerline
     temp = []
     cl1,cl2 = centerline.points
-    for t in SplitLineSegmetOverPoints(ls1,cl1,cl2) :
+    for t in SplitLineSegmetOverPoints(ls1,ls1.projection(cl1),ls1.projection(cl2)) :
         temp.append(t)
-    for t in SplitLineSegmetOverPoints(ls2,cl1,cl2) :
+    for t in SplitLineSegmetOverPoints(ls2,ls2.projection(cl1),ls2.projection(cl2)) :
         temp.append(t)
     Nls1 = Segment(ls1.projection(cl1),ls1.projection(cl2))
     Nls2 = Segment(ls2.projection(cl1),ls2.projection(cl2))
+    name = "temp" + str(i) + ".shp"
+    name2 = "temp" + str(i) + "original.shp"
+    MakeShapeFile([ls1,ls2],name2)
+    temp2 = []
+    for t in temp :
+        temp2.append(t)
+    temp2.append(Nls1)
+    temp2.append(Nls2)
+    temp2.append(centerline)
+    MakeShapeFile(temp2,name)
     return Nls1,Nls2,centerline,temp
