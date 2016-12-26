@@ -1,3 +1,6 @@
+# import sympy
+# from sympy.geometry import *
+
 # from sympy import *
 from sympy.geometry import *
 

@@ -1,19 +1,11 @@
 # Python library to interact with dxf files
 import ezdxf
 #Python library for geometry and mathematical computations
-# import sympy
-# from sympy.geometry import *
-
-# for writing into a shape file
-from osgeo import ogr
-
-#for checking and deleting the file
-import os
 
 from LineGeometry import *
 from GlobalValues import *
 from GenCenterLine import *
-
+from GenOutput import *
 
 def CanFormWallPair(ls1,ls2) :
     if not ls1.is_parallel(ls2) :
@@ -55,43 +47,9 @@ def JoinCenterLine(ls1,ls2) :
     ls2 = ExtendLineSegment(ls2,IntersectionPoint)
     return ls1,ls2
 
-def create_line(ls) :
-    a,b = ls.points
-    line = ogr.Geometry(ogr.wkbLineString)
-    line.AddPoint(float(a.x), float(a.y))
-    line.AddPoint(float(b.x), float(b.y))
-    return line
-
-def MakeShapeFile(ArrayOfLineSegmets,name) :
-    print "Going to create the impossible"
-    driver = ogr.GetDriverByName('ESRI Shapefile')
-    shapefile_name = name
-    if os.path.exists(shapefile_name):
-        os.remove(shapefile_name)
-    out_data_source = driver.CreateDataSource(shapefile_name)
-
-    # Create Layer
-
-    out_layer = out_data_source.CreateLayer('center_line', geom_type=ogr.wkbLineString)
-
-    # Set Geometry
-
-    out_layer_defn = out_layer.GetLayerDefn()
-    for i in range(len(ArrayOfLineSegmets)) :
-        new_geom = create_line(ArrayOfLineSegmets[i])
-        feature = ogr.Feature(out_layer_defn)
-        feature.SetGeometry(new_geom)
-        out_layer.CreateFeature(feature)
-        feature.Destroy()
-
-    out_data_source.Destroy()
-def PrintLines(Array) :
-    for i in range(len(Array)) :
-        a,b = Array[i].points
-        print i , float(a.x) ,float(a.y) ,float(b.x) ,float(b.y)
 
 def main() :
-    dwg = ezdxf.readfile("1RoomWSSNew.dxf")
+    dwg = ezdxf.readfile("1RoomWSS.dxf")
     modelspace = dwg.modelspace()
     # Extarction of lines-segments from the dxf file and storing them as
     # sympy.geometry.Segment for further computation
