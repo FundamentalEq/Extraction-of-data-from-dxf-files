@@ -11,9 +11,11 @@ from GenOutput import *
 
 # Function to check is line-segment1(ls1) and line-segment2(ls2) can form a wall pair
 def CanFormWallPair(ls1,ls2) :
-    if not ls1.is_parallel(ls2) :
+    if not ( CheckParallelwithThreshold(ls1,ls2) or  CheckParallelwithThreshold(ls2,ls1) ) :
+        print "Failed at parallel"
         return False
-    if FindProjectedLen(ls1,ls2) == 0.0 :
+    if FindProjectedLen(ls1,ls2) < min_wall_width :
+        print "Failed at proj"
         return False
     PrependicularDistance = FindPrependicularDistance(ls1,ls2)
     if PrependicularDistance < min_wall_width :
@@ -42,8 +44,8 @@ def main() :
         x2,y2,z2 = l.dxf.end
         ElineSegments.append(Segment(Point(x1,y1),Point(x2,y2)))
 
-    # PrintLines(ElineSegments)
-    # MakeShapeFile(ElineSegments,"Eline.shp")
+    PrintLines(ElineSegments)
+    MakeShapeFile(ElineSegments,"Eline_new.shp")
 
     # For Storing wether the current line has already been paired or not
     Edone = [ False for i in range(len(ElineSegments)) ]
@@ -60,22 +62,27 @@ def main() :
     ElineSegmetsLen = len(ElineSegments)
     i = 0
     while i < ElineSegmetsLen :
+        if i == 70 :
+            break
         # print "i : ", i ,ElineSegments[i]
         if not Edone[i] :
             PairIndex = -1
-
+            print "For ,i = ",i
             # Find the pair index
             j = i + 1
             while j < ElineSegmetsLen :
                 if not Edone[j] :
+                    print "     trying j = ",j
                     if CanFormWallPair(ElineSegments[i],ElineSegments[j])  :
                         if PairIndex == -1 :
                             PairIndex = j
-                        elif FindProjectedLen(ElineSegments[i],ElineSegments[j]) > FindProjectedLen(ElineSegments[i],ElineSegments[PairIndex]) :
-                            PairIndex = j
+                            break
+                        # elif FindProjectedLen(ElineSegments[i],ElineSegments[j]) > FindProjectedLen(ElineSegments[i],ElineSegments[PairIndex]) :
+                            # PairIndex = j
 
                 j += 1
 
+            print i," ==== ",PairIndex
             # if the PairIndex has been found
             if PairIndex >= 0 :
                 # Mark that both the ith and PairIndex th line have been paired
@@ -87,8 +94,13 @@ def main() :
                 ElineSegments[i],ElineSegments[PairIndex],centerline,temp = SplitOverlappingLineSegmets(ElineSegments[i],ElineSegments[PairIndex])
                 CenterLines.append(centerline)
 
+                print "Eline no" ,i," changed to",ElineSegments[i]
+                print "Eline no" ,PairIndex," changed to",ElineSegments[PairIndex]
+
                 # Add new lines segments genrated due to splitting
                 for t in temp :
+                    a,b = t.points
+                    print "Eline no :" ,len(ElineSegments) , t
                     ElineSegments.append(t)
                 # PrintLines(temp)
 
@@ -99,7 +111,7 @@ def main() :
 
                 ElineSegmetsLen = len(ElineSegments)
         i += 1
-    # PrintLines(ElineSegments)
+    PrintLines(ElineSegments)
     # MakeShapeFile(ElineSegments,"ss.shp")
     # print AssoCenterLine
 

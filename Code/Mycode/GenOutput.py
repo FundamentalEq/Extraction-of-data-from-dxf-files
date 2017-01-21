@@ -38,5 +38,8 @@ def MakeShapeFile(ArrayOfLineSegmets,name) :
     out_data_source.Destroy()
 def PrintLines(Array) :
     for i in range(len(Array)) :
+        if i == 4 or i == 5 :
+            print i , Array[i] , Array[i].slope
+        print i , ":" ,Array[i]
         a,b = Array[i].points
         print i , float(a.x) ,float(a.y) ,float(b.x) ,float(b.y)
