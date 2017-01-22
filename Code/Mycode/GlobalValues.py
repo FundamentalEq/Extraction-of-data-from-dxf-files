@@ -1,3 +1,4 @@
 # In meters
-min_wall_width = 0.1
-max_wall_width = 1.5
+min_wall_width = 3
+max_wall_width = 14
+ThersholdMax = 0.000000001
