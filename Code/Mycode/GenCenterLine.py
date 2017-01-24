@@ -1,8 +1,4 @@
-# import sympy
-# from sympy.geometry import *
-
-from sympy import *
-from sympy.geometry import *
+from LineSegment import *
 
 from LineGeometry import *
 from GenOutput import *
@@ -10,25 +6,11 @@ from GlobalValues import *
 # Function that find the centerline , given 2 line segments ls1 and ls2
 # For understanding the working of the function please refer to presentation1
 def FindCenterLine(ls1,ls2) :
-    # print ls1 , ls2
-    if not CheckParallelwithThreshold(ls1,ls2) :
-        print "Lines are not parallel thus Center Line cannot be genrated"
-        return None
-
-    projectedlen = FindProjectedLen(ls1,ls2)
-
-    if (abs(float(projectedlen) - float(ls1.length)) < min_wall_width) and (abs(float(projectedlen) - float(ls2.length)) < min_wall_width) :
-        print "inside new"
-        x2,y2 = ls2.points
-        mid1 =  x2.midpoint(ls1.projection(x2))
-        mid2 =  y2.midpoint(ls1.projection(y2))
-        s = Segment(mid1,mid2)
-        return s
 
     mid1 = None
     mid2 = None
     x2,y2 = ls2.points
-    if CheckIfLineSegmentContainsPoint(ls1,ls1.projection(x2)) :
+    if ls1.contains(ls1.projection(x2)) :
         print "did contains"
         mid1 = x2.midpoint(ls1.projection(x2))
 
@@ -36,7 +18,7 @@ def FindCenterLine(ls1,ls2) :
     print "mid1 = ",mid1
     print "mid2 = ",mid2
 
-    if CheckIfLineSegmentContainsPoint(ls1,ls1.projection(y2)) :
+    if ls1.contains(ls1.projection(y2)) :
         if not mid1 :
             mid1 = y2.midpoint(ls1.projection(y2))
         elif (not mid1 == y2.midpoint(ls1.projection(y2))) and (not mid2)  :
@@ -47,7 +29,7 @@ def FindCenterLine(ls1,ls2) :
     print "mid2 = ",mid2
 
     x1,y1 = ls1.points
-    if CheckIfLineSegmentContainsPoint(ls2,ls2.projection(y1)) :
+    if ls2.contains(ls2.projection(y1)) :
         if not mid1 :
             mid1 = y1.midpoint(ls2.projection(y1))
         elif  (not mid1 == y1.midpoint(ls2.projection(y1))) and (not mid2) :
@@ -57,7 +39,7 @@ def FindCenterLine(ls1,ls2) :
     print "mid1 = ",mid1
     print "mid2 = ",mid2
 
-    if CheckIfLineSegmentContainsPoint(ls2,ls2.projection(x1)) :
+    if ls2.contains(ls2.projection(x1)) :
         if not mid1 :
             mid1 = x1.midpoint(ls2.projection(x1))
         elif (not mid1 == x1.midpoint(ls2.projection(x1)))  and (not mid2) :
@@ -68,7 +50,7 @@ def FindCenterLine(ls1,ls2) :
     print "mid2 = ",mid2
 
     if (not mid1) or (not mid2) :
-        print "Error : unable to form centeral line" ,float(projectedlen)
+        print "Error : unable to form centeral line" 
         if  mid1 :
             mid2 = mid1
         elif mid2 :

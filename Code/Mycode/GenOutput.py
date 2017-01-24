@@ -4,7 +4,7 @@ from osgeo import ogr
 #for checking and deleting the file
 import os
 
-from sympy.geometry import *
+from LineSegment import *
 
 def create_line(ls) :
     a,b = ls.points
@@ -38,7 +38,7 @@ def MakeShapeFile(ArrayOfLineSegmets,name) :
     out_data_source.Destroy()
 def PrintLines(Array) :
     for i in range(len(Array)) :
-        if i == 4 or i == 5 :
-            print i , Array[i] , Array[i].slope
+        # if i == 4 or i == 5 :
+            # print i , Array[i] , Array[i].slope
         a,b = Array[i].points
         print i , float(a.x) ,float(a.y) ,float(b.x) ,float(b.y)

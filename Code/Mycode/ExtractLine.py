@@ -11,13 +11,13 @@ from GenOutput import *
 
 # Function to check is line-segment1(ls1) and line-segment2(ls2) can form a wall pair
 def CanFormWallPair(ls1,ls2) :
-    if not ( CheckParallelwithThreshold(ls1,ls2) or  CheckParallelwithThreshold(ls2,ls1) ) :
+    if not ls1.is_parallel(ls2) :
         print "Failed at parallel"
         return False
-    if FindProjectedLen(ls1,ls2) < min_wall_width :
+    if ls1.facinglength(ls2) < min_wall_width :
         print "Failed at proj"
         return False
-    PrependicularDistance = FindPrependicularDistance(ls1,ls2)
+    PrependicularDistance = ls1.prependiculardistance(ls2)
     if PrependicularDistance < min_wall_width :
         return False
     if PrependicularDistance > max_wall_width :
@@ -62,8 +62,6 @@ def main() :
     ElineSegmetsLen = len(ElineSegments)
     i = 0
     while i < ElineSegmetsLen :
-        if i == 100 :
-            break
         # print "i : ", i ,ElineSegments[i]
         if not Edone[i] :
             PairIndex = -1
@@ -76,9 +74,9 @@ def main() :
                     if CanFormWallPair(ElineSegments[i],ElineSegments[j])  :
                         if PairIndex == -1 :
                             PairIndex = j
-                            break
-                        # elif FindProjectedLen(ElineSegments[i],ElineSegments[j]) > FindProjectedLen(ElineSegments[i],ElineSegments[PairIndex]) :
-                            # PairIndex = j
+                            # break
+                        elif ElineSegments[i].facinglength(ElineSegments[j]) > ElineSegments[i].facinglength(ElineSegments[PairIndex]) :
+                            PairIndex = j
 
                 j += 1
 
@@ -97,7 +95,6 @@ def main() :
                 # Add new lines segments genrated due to splitting
                 for t in temp :
                     ElineSegments.append(t)
-                # PrintLines(temp)
 
                 # Extend the others array also accomodate the new lines
                 while len(ElineSegments) > len(Edone) :
@@ -119,7 +116,7 @@ def main() :
     # for extension of center Lines
     for i in range(len(ElineSegments)) :
         for j in range(i+1,len(ElineSegments)) :
-            if (AssoCenterLine[i]>-1) and (AssoCenterLine[j] > -1) and (len(ElineSegments[i].intersection(ElineSegments[j])) > 0) :
+            if (AssoCenterLine[i]>-1) and (AssoCenterLine[j] > -1) and ElineSegments[i].intersection(ElineSegments[j])!= None  :
                 CenterLines[AssoCenterLine[i]],CenterLines[AssoCenterLine[j]] = JoinCenterLine(CenterLines[AssoCenterLine[i]],CenterLines[AssoCenterLine[j]])
 
     print "CenterLine before extension"
