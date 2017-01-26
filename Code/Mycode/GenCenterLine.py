@@ -113,6 +113,8 @@ def SplitLineSegmetOverPoints(ls1,a,b) :
 def SplitOverlappingLineSegmets(ls1,ls2) :
     print "inside split line segment"
     centerline = FindCenterLine(ls1,ls2)
+    print "Got my centerline"
+    centerline.printme()
     # print "Centerline" , centerline
     temp = []
     cl1,cl2 = centerline.points

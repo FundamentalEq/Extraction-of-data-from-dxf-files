@@ -10,9 +10,10 @@ class Segment:
 
     def __init__(self,a,b) :
 
-        if a.x == b.x :
-            # if a.y == b.y :
-            #     raise Exception('Single Point cannot form a segment')
+        if a == b :
+            raise Exception('Single point cannot form a line segment')
+        # if the line is vertical
+        if abs(a.x - b.x) <= EPS :
             if a.y < b.y :
                 self.a = a
                 self.b = b
@@ -20,12 +21,13 @@ class Segment:
                 self.a = b
                 self.b = a
 
-        elif a.x < b.x :
-            self.a = a
-            self.b = b
         else :
-            self.a = b
-            self.b = a
+             if a.x < b.x :
+                 self.a = a
+                 self.b = b
+             else :
+                 self.a = b
+                 self.b = a
 
         self.length = a.distance(b)
         self.coordinates = (self.a,self.b)
@@ -47,40 +49,14 @@ class Segment:
         if abs(diff - math.pi) < RadianEPS :
             return True
         return False
-        # # if both are vertical lines
-        # if self.slope == Inf and ls.slope == Inf :
-        #     return True
-        # # if one is vertical and other is not
-        # if self.slope == Inf or ls.slope == Inf :
-        #     return False
-        #
-        # # the genral case
-        # if abs(self.slope - ls.slope) <= EPS :
-        #     return True
-        #
-        # # Rotate the line segments and again check for the line segments to be parallel
-        # # to handle the case where the line segments are almost parallel but have very
-        # # large slope as they are vertical
-        # selfn = Segment(self.Origin.rotate(math.pi/2,self.a),self.Origin.rotate(math.pi/2,self.b))
-        # lsn = Segment(self.Origin.rotate(math.pi/2,ls.a),self.Origin.rotate(math.pi/2,ls.b))
-        #
-        # # if both are vertical lines
-        # if selfn.slope == Inf and lsn.slope == Inf :
-        #     return True
-        # # if one is vertical and other is not
-        # if selfn.slope == Inf or lsn.slope == Inf :
-        #     return False
-        #
-        # # the genral case
-        # if abs(selfn.slope - lsn.slope) <= EPS :
-        #     return True
-        #
-        # return False
-
 
     # Check if the line segment contains the given point "p" or not
     def contains(self,p) :
-        if self.is_parallel(Segment(p,self.a)) :
+        if not p == self.a :
+            other = self.a
+        else :
+            other = self.b
+        if self.is_parallel(Segment(p,other)) :
             if p.distance(self.a) <= EPS or p.distance(self.b) <= EPS :
                 return True
             if self.a.x <= p.x and p.x <= self.b.x :
