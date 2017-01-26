@@ -23,10 +23,6 @@ def ExtendLineSegment(ls1,p) :
     return s
 
 def JoinCenterLine(ls1,ls2) :
-    #Find the lines corressponding to line segments
-    l1 = Line(ls1)
-    l2 = Line(ls2)
-
     # If the 2 line segments are parallel
     if ls1.is_parallel(ls2) :
         return ls1,ls2

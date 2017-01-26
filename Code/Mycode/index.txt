@@ -1,0 +1,16 @@
+>> Point
+    .x
+    .y
+    rotate(angle,point) point
+    midpoint(point,point) point
+    distance(point) Decimal
+
+>> Line Segment
+    .points point,point
+    .length Decimal
+    .slope
+    contains(point) bool
+    is_parallel(Line Segment) bool
+    projection(point) point
+    intersection(linesegment) point
+    facinglength(LineSegment) Decimal

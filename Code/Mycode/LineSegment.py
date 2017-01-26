@@ -37,37 +37,45 @@ class Segment:
         else :
             self.slope = (b.y - a.y)/(b.x - a.x)
 
+        self.angle = math.atan2(self.b.y - self.a.y,self.b.x - self.a.x)
+
     # Check if the two line segments ar
     def is_parallel(self,ls) :
-        # if both are vertical lines
-        if self.slope == Inf and ls.slope == Inf :
+        diff = abs(self.angle - ls.angle)
+        if diff < RadianEPS :
             return True
-        # if one is vertical and other is not
-        if self.slope == Inf or ls.slope == Inf :
-            return False
-
-        # the genral case
-        if abs(self.slope - ls.slope) <= EPS :
+        if abs(diff - math.pi) < RadianEPS :
             return True
-
-        # Rotate the line segments and again check for the line segments to be parallel
-        # to handle the case where the line segments are almost parallel but have very
-        # large slope as they are vertical
-        selfn = Segment(self.Origin.rotate(math.pi/2,self.a),self.Origin.rotate(math.pi/2,self.b))
-        lsn = Segment(self.Origin.rotate(math.pi/2,ls.a),self.Origin.rotate(math.pi/2,ls.b))
-
-        # if both are vertical lines
-        if selfn.slope == Inf and lsn.slope == Inf :
-            return True
-        # if one is vertical and other is not
-        if selfn.slope == Inf or lsn.slope == Inf :
-            return False
-
-        # the genral case
-        if abs(selfn.slope - lsn.slope) <= EPS :
-            return True
-
         return False
+        # # if both are vertical lines
+        # if self.slope == Inf and ls.slope == Inf :
+        #     return True
+        # # if one is vertical and other is not
+        # if self.slope == Inf or ls.slope == Inf :
+        #     return False
+        #
+        # # the genral case
+        # if abs(self.slope - ls.slope) <= EPS :
+        #     return True
+        #
+        # # Rotate the line segments and again check for the line segments to be parallel
+        # # to handle the case where the line segments are almost parallel but have very
+        # # large slope as they are vertical
+        # selfn = Segment(self.Origin.rotate(math.pi/2,self.a),self.Origin.rotate(math.pi/2,self.b))
+        # lsn = Segment(self.Origin.rotate(math.pi/2,ls.a),self.Origin.rotate(math.pi/2,ls.b))
+        #
+        # # if both are vertical lines
+        # if selfn.slope == Inf and lsn.slope == Inf :
+        #     return True
+        # # if one is vertical and other is not
+        # if selfn.slope == Inf or lsn.slope == Inf :
+        #     return False
+        #
+        # # the genral case
+        # if abs(selfn.slope - lsn.slope) <= EPS :
+        #     return True
+        #
+        # return False
 
 
     # Check if the line segment contains the given point "p" or not
@@ -130,7 +138,7 @@ class Segment:
     def intersection(self,ls) :
         p = self.extendedintersection(ls)
 
-        if p == None :
+        if not p :
             return False
 
         if self.contains(p) and ls.contains(p) :
@@ -204,3 +212,6 @@ class Segment:
 
         # if the incoming is a line segment
         return ls.a.distance(self.projection(ls.a))
+
+    def printme(self) :
+        print "Line is ",float(self.a.x),float(self.a.y),float(self.b.x),float(self.b.y)

@@ -5,59 +5,54 @@ from GenOutput import *
 from GlobalValues import *
 # Function that find the centerline , given 2 line segments ls1 and ls2
 # For understanding the working of the function please refer to presentation1
+
 def FindCenterLine(ls1,ls2) :
+    lsn = ls1.projection(ls2)
+    # if the lines are exact vertical
+    print "ls1"
+    ls1.printme()
+    print "ls2"
+    ls2.printme()
+    print "lsn"
+    lsn.printme()
+    if lsn.slope == Inf :
+        # case 1
+        if lsn.a.y <= ls1.a.y and ls1.b.y <= lsn.b.y :
+            centerline = ls1
+        # case 2
+        if ls1.a.y <= lsn.a.y and lsn.b.y <= ls1.b.y :
+            centerline = lsn
+        # case 3
+        if lsn.a.y <= ls1.a.y  and lsn.b.y <= ls1.b.y :
+            centerline = Segment(ls1.a,lsn.b)
+        # case 4
+        if ls1.a.y <= lsn.a.y and ls1.b.y <= lsn.b.y :
+            centerline = Segment(lsn.a,ls1.b)
 
-    mid1 = None
-    mid2 = None
-    x2,y2 = ls2.points
-    if ls1.contains(ls1.projection(x2)) :
-        print "did contains"
-        mid1 = x2.midpoint(ls1.projection(x2))
+    else :
+        # case 1
+        if lsn.a.x <= ls1.a.x and ls1.b.x <= lsn.b.x :
+            centerline = ls1
+        # case 2
+        if ls1.a.x <= lsn.a.x and lsn.b.x <= ls1.b.x :
+            centerline = lsn
+        # case 3
+        if lsn.a.x <= ls1.a.x  and lsn.b.x <= ls1.b.x :
+            centerline = Segment(ls1.a,lsn.b)
+        # case 4
+        if ls1.a.x <= lsn.a.x and ls1.b.x <= lsn.b.x :
+            centerline = Segment(lsn.a,ls1.b)
 
-    print float(x2.x),float(x2.y)
-    print "mid1 = ",mid1
-    print "mid2 = ",mid2
+    if centerline == None :
+        raise Exception('centerline not found')
 
-    if ls1.contains(ls1.projection(y2)) :
-        if not mid1 :
-            mid1 = y2.midpoint(ls1.projection(y2))
-        elif (not mid1 == y2.midpoint(ls1.projection(y2))) and (not mid2)  :
-            mid2 = y2.midpoint(ls1.projection(y2))
-
-    print float(y2.x),float(y2.y)
-    print "mid1 = ",mid1
-    print "mid2 = ",mid2
-
-    x1,y1 = ls1.points
-    if ls2.contains(ls2.projection(y1)) :
-        if not mid1 :
-            mid1 = y1.midpoint(ls2.projection(y1))
-        elif  (not mid1 == y1.midpoint(ls2.projection(y1))) and (not mid2) :
-            mid2 = y1.midpoint(ls2.projection(y1))
-
-    print float(y1.x),float(y1.y)
-    print "mid1 = ",mid1
-    print "mid2 = ",mid2
-
-    if ls2.contains(ls2.projection(x1)) :
-        if not mid1 :
-            mid1 = x1.midpoint(ls2.projection(x1))
-        elif (not mid1 == x1.midpoint(ls2.projection(x1)))  and (not mid2) :
-            mid2 = x1.midpoint(ls2.projection(x1))
-
-    print float(x1.x),float(x1.y)
-    print "mid1 = ",mid1
-    print "mid2 = ",mid2
-
-    if (not mid1) or (not mid2) :
-        print "Error : unable to form centeral line" 
-        if  mid1 :
-            mid2 = mid1
-        elif mid2 :
-            mid1 = mid2
-        # return None
-    s = Segment(mid1,mid2)
-    return s
+    print "centerline"
+    centerline.printme()
+    centerline2 = ls2.projection(centerline)
+    print "centerline2"
+    centerline2.printme()
+    ans = Segment(centerline.a.midpoint(centerline2.a),centerline.b.midpoint(centerline2.b))
+    return ans
 
 # Function splits the linse Segment ls1, into parts that don't overlap with the
 # Segment formed by points a and b
@@ -116,18 +111,19 @@ def SplitLineSegmetOverPoints(ls1,a,b) :
 # Function extract the centerline, and split the line segments , into the part used for genration of centerline
 # and the part not used for the genration of the center line
 def SplitOverlappingLineSegmets(ls1,ls2) :
+    print "inside split line segment"
     centerline = FindCenterLine(ls1,ls2)
     # print "Centerline" , centerline
     temp = []
     cl1,cl2 = centerline.points
-    for t in SplitLineSegmetOverPoints(ls1,ls1.projection(cl1),ls1.projection(cl2)) :
-        if float(t.length) > min_wall_width :
-            print "t = ",float(t.length)
-            temp.append(t)
-    for t in SplitLineSegmetOverPoints(ls2,ls2.projection(cl1),ls2.projection(cl2)) :
-        if float(t.length) > min_wall_width :
-            print "t = ", float(t.length)
-            temp.append(t)
+    # for t in SplitLineSegmetOverPoints(ls1,ls1.projection(cl1),ls1.projection(cl2)) :
+    #     if float(t.length) > min_wall_width :
+    #         print "t = ",float(t.length)
+    #         temp.append(t)
+    # for t in SplitLineSegmetOverPoints(ls2,ls2.projection(cl1),ls2.projection(cl2)) :
+    #     if float(t.length) > min_wall_width :
+    #         print "t = ", float(t.length)
+    #         temp.append(t)
     Nls1 = Segment(ls1.projection(cl1),ls1.projection(cl2))
     Nls2 = Segment(ls2.projection(cl1),ls2.projection(cl2))
     return Nls1,Nls2,centerline,temp
