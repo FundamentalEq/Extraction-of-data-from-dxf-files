@@ -12,10 +12,10 @@ from GenOutput import *
 # Function to check is line-segment1(ls1) and line-segment2(ls2) can form a wall pair
 def CanFormWallPair(ls1,ls2) :
     if not ls1.is_parallel(ls2) :
-        print "Failed at parallel"
+        # print "Failed at parallel"
         return False
     if ls1.facinglength(ls2) < min_wall_width :
-        print "Failed at proj"
+        # print "Failed at proj"
         return False
     PrependicularDistance = ls1.prependiculardistance(ls2)
     if PrependicularDistance < min_wall_width :
@@ -23,6 +23,8 @@ def CanFormWallPair(ls1,ls2) :
     if PrependicularDistance > max_wall_width :
         return False
 
+    ls1.printme()
+    ls2.printme()
     print "facing length is ",ls1.facinglength(ls2)
     return True
 
@@ -67,12 +69,12 @@ def main() :
         # print "i : ", i ,ElineSegments[i]
         if not Edone[i] :
             PairIndex = -1
-            print "For ,i = ",i
+            # print "For ,i = ",i
             # Find the pair index
             j = i + 1
             while j < ElineSegmetsLen :
                 if not Edone[j] :
-                    print "     trying j = ",j
+                    # print "     trying j = ",j
                     if CanFormWallPair(ElineSegments[i],ElineSegments[j])  :
                         if PairIndex == -1 :
                             PairIndex = j
@@ -110,7 +112,16 @@ def main() :
     # print AssoCenterLine
 
     print "CenterLine before extension"
-    PrintLines(CenterLines)
+    # PrintLines(CenterLines)
+    for i in range(len(CenterLines)) :
+        a,b = CenterLines[i].points
+        print i , float(a.x) ,float(a.y) ,float(b.x) ,float(b.y)
+        x,y = AssoEline[i]
+        print "Asso line is x :" ,x
+        ElineSegments[x].printme()
+        print "Asso line is y :" ,y
+        ElineSegments[y].printme()
+
     Name = FileName.split('.dxf')[0] + "_centerlines_before_extension.shp"
     MakeShapeFile(CenterLines,Name)
 
@@ -121,7 +132,7 @@ def main() :
             if (AssoCenterLine[i]>-1) and (AssoCenterLine[j] > -1) and ElineSegments[i].intersection(ElineSegments[j])!= None  :
                 CenterLines[AssoCenterLine[i]],CenterLines[AssoCenterLine[j]] = JoinCenterLine(CenterLines[AssoCenterLine[i]],CenterLines[AssoCenterLine[j]])
 
-    print "CenterLine before extension"
+    print "CenterLine after extension"
     PrintLines(CenterLines)
     # writing into a shape file
     Name = FileName.split('.dxf')[0] + "_centerlines_after_extension.shp"

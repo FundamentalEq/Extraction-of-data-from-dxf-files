@@ -9,12 +9,12 @@ from GlobalValues import *
 def FindCenterLine(ls1,ls2) :
     lsn = ls1.projection(ls2)
     # if the lines are exact vertical
-    print "ls1"
-    ls1.printme()
-    print "ls2"
-    ls2.printme()
-    print "lsn"
-    lsn.printme()
+    # print "ls1"
+    # ls1.printme()
+    # print "ls2"
+    # ls2.printme()
+    # print "lsn"
+    # lsn.printme()
     if lsn.slope == Inf :
         # case 1
         if lsn.a.y <= ls1.a.y and ls1.b.y <= lsn.b.y :
@@ -46,11 +46,11 @@ def FindCenterLine(ls1,ls2) :
     if centerline == None :
         raise Exception('centerline not found')
 
-    print "centerline"
-    centerline.printme()
+    # print "centerline"
+    # centerline.printme()
     centerline2 = ls2.projection(centerline)
-    print "centerline2"
-    centerline2.printme()
+    # print "centerline2"
+    # centerline2.printme()
     ans = Segment(centerline.a.midpoint(centerline2.a),centerline.b.midpoint(centerline2.b))
     return ans
 
@@ -126,6 +126,6 @@ def SplitOverlappingLineSegmets(ls1,ls2) :
     #     if float(t.length) > min_wall_width :
     #         print "t = ", float(t.length)
     #         temp.append(t)
-    Nls1 = Segment(ls1.projection(cl1),ls1.projection(cl2))
-    Nls2 = Segment(ls2.projection(cl1),ls2.projection(cl2))
-    return Nls1,Nls2,centerline,temp
+    # Nls1 = Segment(ls1.projection(cl1),ls1.projection(cl2))
+    # Nls2 = Segment(ls2.projection(cl1),ls2.projection(cl2))
+    return ls1,ls2,centerline,temp

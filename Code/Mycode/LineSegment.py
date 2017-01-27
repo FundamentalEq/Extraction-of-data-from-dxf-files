@@ -155,6 +155,9 @@ class Segment:
 
         # if the lines are exact vertical
         if self.slope == Inf :
+            if self.b.y < ls.a.y or ls.b.y < self.a.y :
+                return Decimal(0)
+
             # case 1
             if self.a.y <= ls.a.y and ls.b.y <= self.b.y :
                 return ls.length
@@ -171,6 +174,12 @@ class Segment:
             if ls.a.y <= self.a.y and ls.b.y <= self.b.y :
                 return self.a.distance(ls.b)
 
+            # case facinglength is 0
+            return Decimal(0)
+
+        if self.b.x < ls.a.x or ls.b.x < self.a.x :
+            return Decimal(0)
+
         # case 1
         if self.a.x <= ls.a.x and ls.b.x <= self.b.x :
             return ls.length
@@ -186,6 +195,9 @@ class Segment:
         # case 4
         if ls.a.x <= self.a.x and ls.b.x <= self.b.x :
             return self.a.distance(ls.b)
+
+        # case facinglength is 0
+        return Decimal(0)
 
     def prependiculardistance(self,ls) :
 

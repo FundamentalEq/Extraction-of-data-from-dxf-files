@@ -26,7 +26,7 @@ def JoinCenterLine(ls1,ls2) :
     # If the 2 line segments are parallel
     if ls1.is_parallel(ls2) :
         return ls1,ls2
-    print "Join centerline called"
+    # print "Join centerline called"
     #Find the point of intersection of the lines
     IntersectionPoint = ls1.extendedintersection(ls2)
     if not IntersectionPoint :
@@ -36,7 +36,6 @@ def JoinCenterLine(ls1,ls2) :
         print ls2.angle
         raise Exception('Disastour')
     #Extend both the line segments to the point of intesection
-    print "IntersectionPoint found"
     ls1 = ExtendLineSegment(ls1,IntersectionPoint)
     ls2 = ExtendLineSegment(ls2,IntersectionPoint)
     return ls1,ls2
