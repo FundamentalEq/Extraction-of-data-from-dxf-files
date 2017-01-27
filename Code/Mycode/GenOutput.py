@@ -25,12 +25,17 @@ def MakeShapeFile(ArrayOfLineSegmets,name) :
 
     out_layer = out_data_source.CreateLayer('center_line', geom_type=ogr.wkbLineString)
 
+    # for giving id to each line
+    out_layer.CreateField(ogr.FieldDefn('id', ogr.OFTInteger))
     # Set Geometry
-
     out_layer_defn = out_layer.GetLayerDefn()
     for i in range(len(ArrayOfLineSegmets)) :
         new_geom = create_line(ArrayOfLineSegmets[i])
         feature = ogr.Feature(out_layer_defn)
+
+        # for giving id to each line
+        feature.SetField('id',i)
+
         feature.SetGeometry(new_geom)
         out_layer.CreateFeature(feature)
         feature.Destroy()
