@@ -78,34 +78,15 @@ def SplitLineSegmetOverPoints(ls1,a,b) :
     temp = []
     # Case 3,4
     if a == c :
-        if b.distance(d) > 0 :
+        if b.distance(d) > EPS :
             temp.append(Segment(b,d))
-    elif a == d :
-        if b.distance(c) > 0 :
-            temp.append(Segment(b,c))
-    elif b == c:
-        if a.distance(d) > 0 :
-            temp.append(Segment(a,d))
     elif b == d:
-        if a.distance(c) > 0 :
+        if a.distance(c) > EPS :
             temp.append(Segment(a,c))
     # case 1,2
     else :
-        if c.distance(a) < c.distance(b) :
-            cc = a
-        else :
-            cc = b
-
-        if c.distance(cc) > 0 :
-            temp.append(Segment(c,cc))
-
-        if d.distance(a) < d.distance(b) :
-            dd = a
-        else :
-            dd = b
-
-        if d.distance(dd) > 0 :
-            temp.append(Segment(d,dd))
+        temp.append(Segment(c,a))
+        temp.append(Segment(b,d))
     return temp
 
 # Function extract the centerline, and split the line segments , into the part used for genration of centerline
@@ -118,14 +99,14 @@ def SplitOverlappingLineSegmets(ls1,ls2) :
     # print "Centerline" , centerline
     temp = []
     cl1,cl2 = centerline.points
-    # for t in SplitLineSegmetOverPoints(ls1,ls1.projection(cl1),ls1.projection(cl2)) :
-    #     if float(t.length) > min_wall_width :
-    #         print "t = ",float(t.length)
-    #         temp.append(t)
-    # for t in SplitLineSegmetOverPoints(ls2,ls2.projection(cl1),ls2.projection(cl2)) :
-    #     if float(t.length) > min_wall_width :
-    #         print "t = ", float(t.length)
-    #         temp.append(t)
-    # Nls1 = Segment(ls1.projection(cl1),ls1.projection(cl2))
-    # Nls2 = Segment(ls2.projection(cl1),ls2.projection(cl2))
+    for t in SplitLineSegmetOverPoints(ls1,ls1.projection(cl1),ls1.projection(cl2)) :
+        if float(t.length) > min_wall_width :
+            print "t = ",float(t.length)
+            temp.append(t)
+    for t in SplitLineSegmetOverPoints(ls2,ls2.projection(cl1),ls2.projection(cl2)) :
+        if float(t.length) > min_wall_width :
+            print "t = ", float(t.length)
+            temp.append(t)
+    Nls1 = Segment(ls1.projection(cl1),ls1.projection(cl2))
+    Nls2 = Segment(ls2.projection(cl1),ls2.projection(cl2))
     return ls1,ls2,centerline,temp

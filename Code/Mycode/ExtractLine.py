@@ -23,9 +23,9 @@ def CanFormWallPair(ls1,ls2) :
     if PrependicularDistance > max_wall_width :
         return False
 
-    ls1.printme()
-    ls2.printme()
-    print "facing length is ",ls1.facinglength(ls2)
+    # ls1.printme()
+    # ls2.printme()
+    # print "facing length is ",ls1.facinglength(ls2)
     return True
 
 # The main function that takes input of a dxf file and Extracts the center line
@@ -112,15 +112,15 @@ def main() :
     # print AssoCenterLine
 
     print "CenterLine before extension"
-    # PrintLines(CenterLines)
-    for i in range(len(CenterLines)) :
-        a,b = CenterLines[i].points
-        print i , float(a.x) ,float(a.y) ,float(b.x) ,float(b.y)
-        x,y = AssoEline[i]
-        print "Asso line is x :" ,x
-        ElineSegments[x].printme()
-        print "Asso line is y :" ,y
-        ElineSegments[y].printme()
+    PrintLines(CenterLines)
+    # for i in range(len(CenterLines)) :
+    #     a,b = CenterLines[i].points
+    #     print i , float(a.x) ,float(a.y) ,float(b.x) ,float(b.y)
+    #     x,y = AssoEline[i]
+    #     print "Asso line is x :" ,x
+    #     ElineSegments[x].printme()
+    #     print "Asso line is y :" ,y
+    #     ElineSegments[y].printme()
 
     Name = FileName.split('.dxf')[0] + "_centerlines_before_extension.shp"
     MakeShapeFile(CenterLines,Name)
@@ -129,7 +129,7 @@ def main() :
     # for extension of center Lines
     for i in range(len(ElineSegments)) :
         for j in range(i+1,len(ElineSegments)) :
-            if (AssoCenterLine[i]>-1) and (AssoCenterLine[j] > -1) and ElineSegments[i].intersection(ElineSegments[j])!= None  :
+            if (AssoCenterLine[i]>-1) and (AssoCenterLine[j] > -1) and ElineSegments[i].intersection(ElineSegments[j])  :
                 CenterLines[AssoCenterLine[i]],CenterLines[AssoCenterLine[j]] = JoinCenterLine(CenterLines[AssoCenterLine[i]],CenterLines[AssoCenterLine[j]])
 
     print "CenterLine after extension"
