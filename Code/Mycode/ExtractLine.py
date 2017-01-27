@@ -22,6 +22,8 @@ def CanFormWallPair(ls1,ls2) :
         return False
     if PrependicularDistance > max_wall_width :
         return False
+
+    print "facing length is ",ls1.facinglength(ls2)
     return True
 
 # The main function that takes input of a dxf file and Extracts the center line

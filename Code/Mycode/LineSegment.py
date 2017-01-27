@@ -52,17 +52,17 @@ class Segment:
 
     # Check if the line segment contains the given point "p" or not
     def contains(self,p) :
-        if not p == self.a :
-            other = self.a
-        else :
-            other = self.b
-        if self.is_parallel(Segment(p,other)) :
-            if p.distance(self.a) <= EPS or p.distance(self.b) <= EPS :
+        # if p is same as self.a or self.b
+        if p.distance(self.a) <= EPS or p.distance(self.b) <= EPS :
+            return True
+        if self.is_parallel(Segment(p,self.a)) :
+            # if the line is vertical
+            if abs(self.a.x - self.b.x) <= EPS :
+                if self.a.y <= p.y and p.y <= self.b.y :
+                    return True
+            elif self.a.x <= p.x and p.x <= self.b.x :
                 return True
-            if self.a.x <= p.x and p.x <= self.b.x :
-                return True
-        else :
-            return False
+        return False
 
     # find the projection of the given point "p" on the line segment , also to
     # find the projection of the line segment on the line segment
@@ -71,6 +71,13 @@ class Segment:
         # if the incoming p is a LineSegment
         if isinstance(p,Segment) :
             return Segment(self.projection(p.a),self.projection(p.b))
+
+        # if the point is same as a
+        if p == self.a :
+            return self.a
+        # if the point is same as b
+        if p == self.b :
+            return self.b
 
         # if the point itself lies on the line segment return the point
         if self.is_parallel(Segment(self.a,p)) :
@@ -142,6 +149,9 @@ class Segment:
         # if the 2 LineSegments are not parallel => they will intersect => facing length = 0
         if not self.is_parallel(ls) :
             return Decimal(0)
+
+        # take projection of ls on self
+        ls = self.projection(ls)
 
         # if the lines are exact vertical
         if self.slope == Inf :
