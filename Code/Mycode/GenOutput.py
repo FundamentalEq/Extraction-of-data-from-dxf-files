@@ -14,7 +14,7 @@ def create_line(ls) :
     return line
 
 def MakeShapeFile(ArrayOfLineSegmets,name) :
-    print "Going to create the impossible"
+    print "Going Genrate Shapefile ",name
     driver = ogr.GetDriverByName('ESRI Shapefile')
     shapefile_name = name
     if os.path.exists(shapefile_name):

@@ -92,20 +92,20 @@ def SplitLineSegmetOverPoints(ls1,a,b) :
 # Function extract the centerline, and split the line segments , into the part used for genration of centerline
 # and the part not used for the genration of the center line
 def SplitOverlappingLineSegmets(ls1,ls2) :
-    print "inside split line segment"
+    # print "inside split line segment"
     centerline = FindCenterLine(ls1,ls2)
-    print "Got my centerline"
+    # print "Got my centerline"
     centerline.printme()
     # print "Centerline" , centerline
     temp = []
     cl1,cl2 = centerline.points
     for t in SplitLineSegmetOverPoints(ls1,ls1.projection(cl1),ls1.projection(cl2)) :
         if float(t.length) > min_wall_width :
-            print "t = ",float(t.length)
+            # print "t = ",float(t.length)
             temp.append(t)
     for t in SplitLineSegmetOverPoints(ls2,ls2.projection(cl1),ls2.projection(cl2)) :
         if float(t.length) > min_wall_width :
-            print "t = ", float(t.length)
+            # print "t = ", float(t.length)
             temp.append(t)
     Nls1 = Segment(ls1.projection(cl1),ls1.projection(cl2))
     Nls2 = Segment(ls2.projection(cl1),ls2.projection(cl2))
