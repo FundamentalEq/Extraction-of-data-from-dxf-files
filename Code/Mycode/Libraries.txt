@@ -1,5 +1,2 @@
-1) sympy
- For mathematical and geometric computations
-
-2) osgeo
+1) osgeo
  For writting into shape files

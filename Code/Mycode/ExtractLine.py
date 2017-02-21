@@ -41,7 +41,7 @@ def main() :
     modelspace = dwg.modelspace()
 
     # Extarction of lines-segments from the dxf file and storing them as
-    # sympy.geometry.Segment for further computation
+    # Segment for further computation
     ElineSegments = []
     for l in modelspace.query('LINE') :
         x1,y1,z1 = l.dxf.start
@@ -137,5 +137,49 @@ def main() :
     # writing into a shape file
     Name = FileName.split('.dxf')[0] + "_centerlines_after_extension.shp"
     MakeShapeFile(CenterLines,Name)
+
+    SegmentedCL = [ [] for i in range(len(CenterLines))]
+
+    # Add the original EndPoints
+    for i in range(len(CenterLines)) :
+        SegmentedCL[i].append(CenterLines[i].points[0])
+        SegmentedCL[i].append(CenterLines[i].points[1])
+
+    # Find all the required Segmented Points
+    for i in range(len(CenterLines)) :
+        for j in range(i+1,len(CenterLines)) :
+            # Check if the 2 lines intersect
+            if CenterLines[i].intersection(CenterLines[j]) :
+                p = CenterLines[i].extendedintersection(CenterLines[j])
+                SegmentedCL[i].append(p)
+                SegmentedCL[j].append(p)
+
+    ReferencePoint = Point(0,0)
+    def SortAlongLine(p1,p2) :
+        if ReferencePoint.distance(p1) < ReferencePoint.distance(p2) :
+            return -1
+        if ReferencePoint.distance(p1) > ReferencePoint.distance(p2) :
+            return 1
+        if ReferencePoint.distance(p1) == ReferencePoint.distance(p2) :
+            return 0
+
+    # Sort all the segmented points in order of their distance to the leftmost
+    # and bottom most point
+
+    for i in range(len(SegmentedCL)) :
+        ReferencePoint = SegmentedCL[i][0]
+        sorted(SegmentedCL[i],SortAlongLine)
+
+    # check for redundant points and make the new centerlines
+    NewCenterLines = []
+    for i in range(len(SegmentedCL)) :
+        for j in range(len(SegmentedCL[i]) - 1) :
+            if not SegmentedCL[i][j] == SegmentedCL[i][j+1] :
+                NewCenterLines.append(Segment(SegmentedCL[i][j],SegmentedCL[i][j+1]))
+    print "Segmented CenterLines"
+    PrintLines(NewCenterLines)
+    # writing into a shape file
+    Name = FileName.split('.dxf')[0] + "_segmentedCenterLines.shp"
+    MakeShapeFile(NewCenterLines,Name)
 
 main()
