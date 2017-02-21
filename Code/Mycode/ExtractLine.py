@@ -182,6 +182,7 @@ def main() :
         for j in range(len(SegmentedCL[i]) - 1) :
             if not SegmentedCL[i][j] == SegmentedCL[i][j+1] :
                 NewCenterLines.append(Segment(SegmentedCL[i][j],SegmentedCL[i][j+1]))
+
     print "Segmented CenterLines"
     PrintLines(NewCenterLines)
     # writing into a shape file
