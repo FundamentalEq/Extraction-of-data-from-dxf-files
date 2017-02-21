@@ -150,26 +150,32 @@ def main() :
         for j in range(i+1,len(CenterLines)) :
             # Check if the 2 lines intersect
             if CenterLines[i].intersection(CenterLines[j]) :
+                # print i , "intersects with ",j
                 p = CenterLines[i].extendedintersection(CenterLines[j])
                 SegmentedCL[i].append(p)
                 SegmentedCL[j].append(p)
 
-    ReferencePoint = Point(0,0)
-    def SortAlongLine(p1,p2) :
-        if ReferencePoint.distance(p1) < ReferencePoint.distance(p2) :
-            return -1
-        if ReferencePoint.distance(p1) > ReferencePoint.distance(p2) :
-            return 1
-        if ReferencePoint.distance(p1) == ReferencePoint.distance(p2) :
-            return 0
+
 
     # Sort all the segmented points in order of their distance to the leftmost
     # and bottom most point
 
     for i in range(len(SegmentedCL)) :
+        # print "line ",i," will be split into ",len(SegmentedCL[i])
         ReferencePoint = SegmentedCL[i][0]
-        sorted(SegmentedCL[i],SortAlongLine)
 
+        def SortAlongLine(p1,p2) :
+            if ReferencePoint.distance(p1) < ReferencePoint.distance(p2) :
+                return -1
+            if ReferencePoint.distance(p1) > ReferencePoint.distance(p2) :
+                return 1
+            if ReferencePoint.distance(p1) == ReferencePoint.distance(p2) :
+                return 0
+
+        SegmentedCL[i] = sorted(SegmentedCL[i],SortAlongLine)
+        # print "Segment ",i
+        # for j in range(len(SegmentedCL[i])) :
+        #     SegmentedCL[i][j].printme()
     # check for redundant points and make the new centerlines
     NewCenterLines = []
     for i in range(len(SegmentedCL)) :
