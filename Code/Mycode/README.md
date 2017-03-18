@@ -15,8 +15,8 @@ is that it can be used to run graph algorithms on it.
         `Installation : sudo pip install ezdxf`
 * <b> Osgeo </b> : to genrate the output inform of a shape file .
         <br>
-        `Installation : sudo apt-get install libgdal-dev
-                       sudo apt install gdal-bin python-gdal python3-gdal`
+        `Installation : sudo apt-get install libgdal-dev &&
+                        sudo apt install gdal-bin python-gdal python3-gdal`
         <br>
 * A small python based 2d geometry that i wrote.
   <br> Link  : https://github.com/FundamentalEq/2D-Geometry-Python-Library
